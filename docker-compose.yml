@@ -1,0 +1,53 @@
+name: business_tools_integration
+
+services:
+
+  # Mongo DB
+  mongo_events:
+    image: mongo
+    container_name: mongo_events
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./databases/mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    networks:
+      - docker_bti_network
+
+  # Nginx API
+  nginx_api:
+    container_name: nginx_api
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    image: novasoft/bti_ngix_api:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - cpp_api
+    volumes:
+      - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - docker_bti_network
+
+  # App
+  cpp_api:
+    container_name: cpp_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9000:9000"
+
+    restart: unless-stopped
+    networks:
+      - docker_bti_network
+
+# Network
+networks:
+  docker_bti_network:
+    driver: bridge

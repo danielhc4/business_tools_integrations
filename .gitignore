@@ -1,0 +1,5 @@
+# Visual Studio Code
+.vscode/
+
+# Mongo DB
+databases/mongodb_data
