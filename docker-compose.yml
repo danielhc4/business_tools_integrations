@@ -10,7 +10,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - ./databases/mongodb_data:/data/db
+      - 'mongo_data:/data/db'
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=password
@@ -46,6 +46,22 @@ services:
     restart: unless-stopped
     networks:
       - docker_bti_network
+
+  # RabbitMQ
+  rabbitmq_api:
+    container_name: rabbitmq_api
+    image: "rabbitmq:3-management"
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - 'rabbitmq_data:/var/lib/rabbitmq'
+    networks:
+      - docker_bti_network
+
+volumes:
+  rabbitmq_data:
+  mongo_data:
 
 # Network
 networks:

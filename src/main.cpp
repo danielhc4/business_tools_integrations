@@ -1,43 +1,20 @@
-#include <fcgio.h>
 #include <iostream>
-#include <string>
-#include <cstdlib>
+#include "fcgio.h"
+#include "http_server_api.hpp"
 
 using namespace std;
+using namespace novasoft_bti_base;
 
-int main() {
+int main(int argc, char *argv[]) {
 
-    // Store standard buffers
-    streambuf * cin_streambuf  = cin.rdbuf();
-    streambuf * cout_streambuf = cout.rdbuf();
-    streambuf * cerr_streambuf = cerr.rdbuf();
+	FCGX_Request request;
 
-    FCGX_Request request;
     FCGX_Init();
     FCGX_InitRequest(&request, 0, 0);
 
     while (FCGX_Accept_r(&request) == 0) {
-
-        // Link std::cout to request output
-        fcgi_streambuf cin_fcgi_streambuf(request.in);
-        fcgi_streambuf cout_fcgi_streambuf(request.out);
-        fcgi_streambuf cerr_fcgi_streambuf(request.err);
-
-        cin.rdbuf(&cin_fcgi_streambuf);
-        cout.rdbuf(&cout_fcgi_streambuf);
-        cerr.rdbuf(&cerr_fcgi_streambuf);
-
-        cout << "Content-Type: text/html\r\n\r\n";
-        cout << "<html><body><h1>Business Tools Integrations</h1></body></html>";
-
-        cout.flush();
-
+        HttpApi::router(request);
     }
-
-    // Restore standar buffers
-    cin.rdbuf(cin_streambuf);
-    cout.rdbuf(cout_streambuf);
-    cerr.rdbuf(cerr_streambuf);
 
     return 0;
 }
