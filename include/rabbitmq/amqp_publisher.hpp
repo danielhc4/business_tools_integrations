@@ -13,7 +13,7 @@ using namespace std;
 using namespace AmqpClient;
 
 
-namespace BSMCollectorAMQPClient {
+namespace BTICollectorAMQPClient {
 
     class AMQP_Publisher : boost::noncopyable {
 
@@ -23,7 +23,7 @@ namespace BSMCollectorAMQPClient {
 
             typedef boost::shared_ptr<AMQP_Publisher> ptr_t;
 
-            static ptr_t Create(Channel::ptr_t channel, const string &exchange_name = "bsm.collector_exchange_", const string &exchange_type = "direct", const string &queue_name = "bsm.collector_queue_") {
+            static ptr_t Create(Channel::ptr_t channel, const string &exchange_name = "bti.collector_exchange_", const string &exchange_type = "direct", const string &queue_name = "bti.collector_queue_") {
                 return boost::make_shared<AMQP_Publisher>(channel, exchange_name, exchange_type, queue_name);
             }
 
@@ -45,6 +45,6 @@ namespace BSMCollectorAMQPClient {
 
     };
 
-} // namespace BSMCollectorAMQPClient
+} // namespace BTICollectorAMQPClient
 
 #endif // _AMQP_PUBLISHER_H

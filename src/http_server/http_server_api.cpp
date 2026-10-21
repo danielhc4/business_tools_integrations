@@ -50,15 +50,15 @@ namespace novasoft_bti_base {
     char * http_request_server_port;
     char * http_request_server_name;
     char * http_request_server_version;
-    char * http_request_bsm_manufacturer;
-    char * http_request_bsm_product;
-    char * http_request_bsm_version;
-    char * http_request_bsm_component;
+    char * http_request_bti_manufacturer;
+    char * http_request_bti_product;
+    char * http_request_bti_version;
+    char * http_request_bti_component;
 
     long sequence = 0;
 
-    using namespace BSMCollectorAMQPClient;
-    using namespace BSMCollectorUtils;
+    using namespace BTICollectorAMQPClient;
+    using namespace BTICollectorUtils;
 
     HttpApi::HTTP_VERBS HttpApi::method_requested(char * method) {
         if (strcmp(method, "GET") == 0) {
@@ -108,55 +108,56 @@ namespace novasoft_bti_base {
 
         ini::IniFile configIni;
 
-        if(!fs::exists("config/bsm.ini")) {
-            cout 	<< _BSM_HTTP_200
+        if(!fs::exists("config/bti.ini")) {
+            cout 	<< _BTI_HTTP_200
                     << "<h1>No existe!</h1>";
         }
         else {
 
             configIni.setMultiLineValues(true);
-            configIni.load("config/bsm.ini");
+            configIni.load("config/bti.ini");
 
             // AMQP Connection
-            string bsm_amqp_channel_host = BSM_Utils::sanitize_params(configIni["amqp"]["bsm_amqp_channel_host"].as<string>());
-            int bsm_amqp_channel_port = configIni["amqp"]["bsm_amqp_channel_port"].as<int>();
-            string bsm_amqp_channel_user = BSM_Utils::sanitize_params(configIni["amqp"]["bsm_amqp_channel_user"].as<string>());
-            string bsm_amqp_channel_pass = BSM_Utils::sanitize_params(configIni["amqp"]["bsm_amqp_channel_pass"].as<string>());
-            string bsm_amqp_channel_vhost = BSM_Utils::sanitize_params(configIni["amqp"]["bsm_amqp_channel_vhost"].as<string>());
+            string bti_amqp_channel_host = BTI_Utils::sanitize_params(configIni["amqp"]["bti_amqp_channel_host"].as<string>());
+            int bti_amqp_channel_port = configIni["amqp"]["bti_amqp_channel_port"].as<int>();
+            string bti_amqp_channel_user = BTI_Utils::sanitize_params(configIni["amqp"]["bti_amqp_channel_user"].as<string>());
+            string bti_amqp_channel_pass = BTI_Utils::sanitize_params(configIni["amqp"]["bti_amqp_channel_pass"].as<string>());
+            string bti_amqp_channel_vhost = BTI_Utils::sanitize_params(configIni["amqp"]["bti_amqp_channel_vhost"].as<string>());
 
             // AMQP Exchange and Queue
-            string bsm_amqp_exchange_name = BSM_Utils::sanitize_params(configIni["amqp"]["bsm_amqp_exchange_name"].as<string>());
-            string bsm_amqp_exchange_type = BSM_Utils::sanitize_params(configIni["amqp"]["bsm_amqp_exchange_type"].as<string>());
-            string bsm_amqp_queue_name = BSM_Utils::sanitize_params(configIni["amqp"]["bsm_amqp_queue_name"].as<string>());
+            string bti_amqp_exchange_name = BTI_Utils::sanitize_params(configIni["amqp"]["bti_amqp_exchange_name"].as<string>());
+            string bti_amqp_exchange_type = BTI_Utils::sanitize_params(configIni["amqp"]["bti_amqp_exchange_type"].as<string>());
+            string bti_amqp_queue_name = BTI_Utils::sanitize_params(configIni["amqp"]["bti_amqp_queue_name"].as<string>());
 
             // HTTP
-            string bsm_http_route = BSM_Utils::sanitize_params(configIni["http"]["bsm_http_route"].as<string>());
+            string bti_http_route = BTI_Utils::sanitize_params(configIni["http"]["bti_http_route"].as<string>());
 
             // Events
-            string bsm_mandatory_attributes_file = BSM_Utils::sanitize_params(configIni["events"]["bsm_mandatory_attributes_file"].as<string>());
+            string bti_mandatory_attributes_file = BTI_Utils::sanitize_params(configIni["events"]["bti_mandatory_attributes_file"].as<string>());
 
             std::time_t received_timestamp = std::time(0);
 
-            // /BSM/v1.0/collector
-            if(strcmp((char *)bsm_http_route.c_str(), http_request_uri) == 0) {
+
+            // /bti/v1.0/collector
+            if(strcmp((char *)bti_http_route.c_str(), http_request_uri) == 0) {
                 if(atoi(http_request_content_length) == 0) {
-                    cout 	<< _BSM_HTTP_406
+                    cout 	<< _BTI_HTTP_406
                             << "Content is empty!";
                 }
                 else {
 
                     if(strcmp((char *)"application/json", http_request_content_type) != 0) {
-                        cout 	<< _BSM_HTTP_406
+                        cout 	<< _BTI_HTTP_406
                                 << "Content type not fit!";
                     }
                     else {
 
                         Channel::ptr_t channel = Channel::Create(
-                            bsm_amqp_channel_host,
-                            bsm_amqp_channel_port,
-                            bsm_amqp_channel_user,
-                            bsm_amqp_channel_pass,
-                            bsm_amqp_channel_vhost
+                            bti_amqp_channel_host,
+                            bti_amqp_channel_port,
+                            bti_amqp_channel_user,
+                            bti_amqp_channel_pass,
+                            bti_amqp_channel_vhost
                         );
 
                         boost::uuids::random_generator uuid_gen;
@@ -170,7 +171,7 @@ namespace novasoft_bti_base {
                         time_format = time_format.substr(0, time_format.size() - 1);
 
                         // Open config attributes and read content
-                        ifstream mandatory_attributes_file_stream(bsm_mandatory_attributes_file);
+                        ifstream mandatory_attributes_file_stream(bti_mandatory_attributes_file);
                         string buffer;
                         string custom_attributes_string;
                         while (getline(mandatory_attributes_file_stream, buffer)) {
@@ -210,7 +211,7 @@ namespace novasoft_bti_base {
                             event_metadata["recived_sequence"] = to_string(sequence);
 
                             root["manufacturer"] = "Novasoft";
-                            root["product"] = "BSM Community";
+                            root["product"] = "bti Community";
                             root["version"] = "1.0.0";
                             root["collector"] = collector;
                             root["event_metadata"] = event_metadata;
@@ -229,9 +230,9 @@ namespace novasoft_bti_base {
 
                         boost::shared_ptr<AMQP_Publisher> pub = AMQP_Publisher::Create(
                             channel,
-                            bsm_amqp_exchange_name,
-                            bsm_amqp_exchange_type,
-                            bsm_amqp_queue_name
+                            bti_amqp_exchange_name,
+                            bti_amqp_exchange_type,
+                            bti_amqp_queue_name
                         );
 
                         pub->Publish(body, uuid);
@@ -274,7 +275,7 @@ namespace novasoft_bti_base {
     // Code 404 Not Found
     void HttpApi::code_404() {
         string template_404 = "html/404.html";
-        if(BSM_Utils::file_exists(template_404)) {
+        if(BTI_Utils::file_exists(template_404)) {
             ifstream html_error_404_file_stream(template_404);
             string buffer;
             string html_template;
@@ -283,17 +284,17 @@ namespace novasoft_bti_base {
             }
             html_error_404_file_stream.close();
 
-            cout 	<< _BSM_HTTP_404
+            cout 	<< _BTI_HTTP_404
                     << html_template;
         }
         else {
-            cout 	<< _BSM_HTTP_404;
+            cout 	<< _BTI_HTTP_404;
         }
     }
 
     // Code 405 Method Not Allowed
     void HttpApi::code_405() {
-        if(BSM_Utils::file_exists("html/405.html")) {
+        if(BTI_Utils::file_exists("html/405.html")) {
             ifstream html_error_405_file_stream("html/405.html");
             string buffer;
             string html_template;
@@ -302,11 +303,11 @@ namespace novasoft_bti_base {
             }
             html_error_405_file_stream.close();
 
-            cout 	<< _BSM_HTTP_405
+            cout 	<< _BTI_HTTP_405
                     << html_template;
         }
         else {
-            cout 	<< _BSM_HTTP_405;
+            cout 	<< _BTI_HTTP_405;
         }
     }
 
@@ -340,10 +341,10 @@ namespace novasoft_bti_base {
         http_request_server_port		=	FCGX_GetParam("SERVER_PORT", request.envp);
         http_request_server_name		=	FCGX_GetParam("SERVER_NAME", request.envp);
         http_request_server_version     =   FCGX_GetParam("SERVER_VERSION", request.envp);
-        http_request_bsm_manufacturer   =   FCGX_GetParam("BSM_MANUFACTURER", request.envp);
-        http_request_bsm_product        =   FCGX_GetParam("BSM_PRODUCT", request.envp);
-        http_request_bsm_version        =   FCGX_GetParam("BSM_VERSION", request.envp);
-        http_request_bsm_component      =   FCGX_GetParam("BSM_COMPONENT", request.envp);
+        http_request_bti_manufacturer   =   FCGX_GetParam("bti_MANUFACTURER", request.envp);
+        http_request_bti_product        =   FCGX_GetParam("bti_PRODUCT", request.envp);
+        http_request_bti_version        =   FCGX_GetParam("bti_VERSION", request.envp);
+        http_request_bti_component      =   FCGX_GetParam("bti_COMPONENT", request.envp);
 
         try {
 

@@ -1,14 +1,14 @@
-#ifndef _BSM_UTILS
-#define _BSM_UTILS
+#ifndef _BTI_Utils
+#define _BTI_Utils
 
 #include <string_view>
 #include <string.h>
 
 using namespace std;
 
-namespace BSMCollectorUtils {
+namespace BTICollectorUtils {
 
-    class BSM_Utils {
+    class BTI_Utils {
         public:
             static string sanitize_params(const std::string& params);
             static bool file_exists(const std::string& name);
@@ -16,4 +16,4 @@ namespace BSMCollectorUtils {
 
 }
 
-#endif /* _BSM_UTILS */
+#endif /* _BTI_Utils */

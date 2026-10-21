@@ -6,9 +6,9 @@
 
 using namespace std;
 
-namespace BSMCollectorUtils {
+namespace BTICollectorUtils {
 
-    string BSM_Utils::sanitize_params(const std::string& params) {
+    string BTI_Utils::sanitize_params(const std::string& params) {
         string s_param = params;
         if(s_param.find("\"", 0) != std::string::npos) {
             s_param.erase(0, 1);
@@ -19,7 +19,7 @@ namespace BSMCollectorUtils {
         return s_param;
     }
 
-    bool BSM_Utils::file_exists(const std::string& name) {
+    bool BTI_Utils::file_exists(const std::string& name) {
         struct stat buffer;
         return (stat (name.c_str(), &buffer) == 0); 
     }

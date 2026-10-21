@@ -11,7 +11,7 @@
 using namespace std;
 using namespace AmqpClient;
 
-namespace BSMCollectorAMQPClient {
+namespace BTICollectorAMQPClient {
 
     AMQP_Publisher::AMQP_Publisher(Channel::ptr_t channel, const string &exchange_name, const string &exchange_type, const string &queue_name) : m_channel(channel), m_exchangeName(exchange_name), m_exchangeType(exchange_type),  m_queueName(queue_name) {
         if (m_exchangeName == "") {

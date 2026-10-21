@@ -9,7 +9,7 @@ namespace AmqpClient
 {
 
     SimpleSubscriber::SimpleSubscriber(Channel::ptr_t channel, const std::string &publisher_name) : m_channel(channel) {
-        m_consumerQueue = "bsm.collector_queue_";
+        m_consumerQueue = "bti.collector_queue_";
         m_channel->DeclareQueue(m_consumerQueue, false, true, false, false);
         m_channel->BindQueue(m_consumerQueue, publisher_name, "");
         m_channel->BasicConsume(m_consumerQueue, m_consumerQueue);
