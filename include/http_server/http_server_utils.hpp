@@ -1,3 +1,6 @@
+// HTTP response codes for BTI support.
+//
+// Copyright (C) 2026 Daniel Herrera Cabrera <dani_goo@hotmail.com>
 #ifndef _BTI_Utils
 #define _BTI_Utils
 
