@@ -9,7 +9,6 @@
 #include <unordered_map>
 
 struct Request {
-
 	std::string query_string;
 	std::string method;
 	std::string content_type;
@@ -36,7 +35,6 @@ struct Request {
 	std::unordered_map<std::string, std::string> params;
 	std::unordered_map<std::string, std::string> headers;
 	std::string body;
-
 };
 
 struct Response {

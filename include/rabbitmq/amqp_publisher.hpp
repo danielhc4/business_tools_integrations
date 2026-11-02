@@ -13,7 +13,7 @@ using namespace std;
 using namespace AmqpClient;
 
 
-namespace BTICollectorAMQPClient {
+namespace novasoft_bti_amqp_client {
 
     class AMQP_Publisher : boost::noncopyable {
 
