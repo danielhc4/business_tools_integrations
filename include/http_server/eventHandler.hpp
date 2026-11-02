@@ -4,7 +4,6 @@
 #ifndef _BTI_EVENTHANDLER
 #define _BTI_EVENTHANDLER
 
-#include "http.hpp"
 #include <string_view>
 #include <string.h>
 #include <ctime>
@@ -25,6 +24,7 @@
 
 #include <SimpleAmqpClient/SimpleAmqpClient.h>
 
+#include "http.hpp"
 #include "fcgio.h"
 
 #include "../../include/rabbitmq/amqp_publisher.hpp"
@@ -32,7 +32,7 @@
 #include "http_server_utils.hpp"
 
 using namespace std;
-using namespace BTICollectorAMQPClient;
+using namespace novasoft_bti_amqp_client;
 using namespace BTICollectorUtils;
 
 namespace fs = std::filesystem;
@@ -44,7 +44,6 @@ class EventHandler
 
     public:
         static void publish(const Request& rq, Response& rs) {
-
 
             ini::IniFile configIni;
 
@@ -89,6 +88,10 @@ class EventHandler
                     }
                     else {
 
+                        Channel::OpenOpts openOpts = Channel::OpenOpts::FromUri("amqp://" + bti_amqp_channel_user + ":" + bti_amqp_channel_pass + "@" + bti_amqp_channel_host + ":" + std::to_string(bti_amqp_channel_port) + "/%2f");
+                        Channel::ptr_t channel = Channel::Open(openOpts);
+
+                        /*
                         Channel::ptr_t channel = Channel::Create(
                             bti_amqp_channel_host,
                             bti_amqp_channel_port,
@@ -96,6 +99,8 @@ class EventHandler
                             bti_amqp_channel_pass,
                             bti_amqp_channel_vhost
                         );
+                        */
+                        
 
                         boost::uuids::random_generator uuid_gen;
                         boost::uuids::uuid guid(uuid_gen());

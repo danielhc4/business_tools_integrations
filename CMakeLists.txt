@@ -11,6 +11,12 @@ file(GLOB SOURCES "src/http_server/*.cpp" "src/rabbitmq/*.cpp")
 
 add_executable(fastcgi src/main.cpp ${SOURCES})
 
+add_custom_command(TARGET fastcgi POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/config
+        $<TARGET_FILE_DIR:fastcgi>/config
+)
+
 find_library(FCGI_LIB fcgi)
 find_library(FCGIPP_LIB fcgi++)
 find_library(SAMQPC_LIB SimpleAmqpClient)
