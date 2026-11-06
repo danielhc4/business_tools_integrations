@@ -53,11 +53,10 @@ RUN make install
 
 WORKDIR /usr/src/app
 
-COPY src/producer/main.cpp ./src/main.cpp
-COPY src/producer/http_server ./src/http_server
-COPY src/producer/rabbitmq ./src/rabbitmq
-COPY src/producer/include/ ./include
-COPY config/ ./config
+COPY ./main.cpp ./src/main.cpp
+COPY ./http_server ./src/http_server
+COPY ./rabbitmq ./src/rabbitmq
+COPY ./include/ ./include
 COPY CMakeLists.txt ./
 
 WORKDIR /usr/src/app
