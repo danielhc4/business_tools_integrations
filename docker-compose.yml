@@ -28,17 +28,19 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - cpp_api
+      - cgi_api
     volumes:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
     networks:
       - docker_bti_network
 
   # App
-  cpp_api:
-    container_name: cpp_api
+  cgi_api:
+    container_name: cgi_api
+    env_file:
+      - .env
     build:
-      context: .
+      context: ./src/producer
       dockerfile: Dockerfile
     ports:
       - "9000:9000"

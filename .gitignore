@@ -3,3 +3,5 @@
 
 # Mongo DB
 databases/mongodb_data
+
+.env
